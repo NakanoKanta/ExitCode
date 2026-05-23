@@ -4,6 +4,7 @@ public class PlayerMove : MonoBehaviour
 {
     [SerializeField] float _playerSpeed = 2f;
     private Rigidbody _rb;
+    [SerializeField] public bool _isMoving = true;
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -11,7 +12,10 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        Move();
+        if (_isMoving)
+        {
+            Move();
+        }
     }
 
     void Move()
