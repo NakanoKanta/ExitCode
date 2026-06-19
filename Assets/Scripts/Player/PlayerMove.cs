@@ -7,6 +7,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] public bool _isMoving = true;
 
     Animator _animator;
+    private Vector3 move;
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -17,6 +18,10 @@ public class PlayerMove : MonoBehaviour
     {
         if (_isMoving)
         {
+            float x = Input.GetAxisRaw("Horizontal");
+            float z = Input.GetAxisRaw("Vertical");
+
+            move = new Vector3(x, 0, z);
             Move();
         }
         Anima();
@@ -24,20 +29,16 @@ public class PlayerMove : MonoBehaviour
     
     void Move() //移動処理
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
-
-        Vector3 move = new Vector3(x,0,z);
-        //transform.Translate(move * _playerSpeed * Time.deltaTime);
+        if (move != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(move);
+        }
         _rb.MovePosition(_rb.position + move * _playerSpeed * Time.fixedDeltaTime);
     }
 
     void Anima() //アニメーションの処理
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
-
-        float speed = new Vector2(x, z).magnitude;
+        float speed = move.magnitude;
 
         _animator.SetFloat("Speed", speed);
     }
