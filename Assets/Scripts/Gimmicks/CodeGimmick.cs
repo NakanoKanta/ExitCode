@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class CodeGimmick : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI _textMeshPro;
+    [SerializeField] TextMeshProUGUI _textInput;
     [SerializeField] TextMeshProUGUI _textAns;
-    [SerializeField] public bool _isMoving = false;
     [SerializeField] bool isTyping = false;
     private string text = "";
     private string _answer;
@@ -14,11 +13,13 @@ public class CodeGimmick : MonoBehaviour
     private string[] _randomTexts = new string[5];
 
     [SerializeField] PlayerMove player;
+    [SerializeField] GuardianMove Guardian;
     void Start()
     {
         _answer = RandomString(5);
         Debug.Log(_answer);
-        _textMeshPro.gameObject.SetActive(false);
+
+        _textInput.gameObject.SetActive(false);
         _textAns.gameObject.SetActive(false);
     }
 
@@ -44,7 +45,7 @@ public class CodeGimmick : MonoBehaviour
                         text = text.Substring(0, text.Length - 1);
                         
                     }
-                    _textMeshPro.text = text;
+                    _textInput.text = text;
                 }
                 // Enter
                 else if (c == '\n' || c == '\r')
@@ -53,7 +54,7 @@ public class CodeGimmick : MonoBehaviour
                     if (text == _answer)
                     {
                         Debug.Log("àÍívÅI");
-                        _isMoving = true;
+                        Guardian._isMove = true;
                     }
                     else 
                     {
@@ -61,17 +62,17 @@ public class CodeGimmick : MonoBehaviour
                     }
                     isTyping = false;
                     player._isMoving = true;
-                    _textMeshPro.gameObject.SetActive(false);
+                    _textInput.gameObject.SetActive(false);
                     _textAns.gameObject.SetActive(false);
                     text = "";
-                    _textMeshPro.text = text;
+                    _textInput.text = text;
                 }
                 // í èÌï∂éö
                 else
                 {
                     text += c;
-                    _textMeshPro.text = text;
-                    Debug.Log("ì¸óÕ: " + text);
+                    _textInput.text = text;
+                    Debug.Log("ì¸óÕíÜ");
                 }
             }
         }
@@ -89,7 +90,7 @@ public class CodeGimmick : MonoBehaviour
                     isTyping = true;
                     player._isMoving = false;
                     skipInputFrame = true;
-                    _textMeshPro.gameObject.SetActive(true);
+                    _textInput.gameObject.SetActive(true);
                     _textAns.gameObject.SetActive(true);
                 }
             }
