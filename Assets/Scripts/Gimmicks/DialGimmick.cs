@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class DialGimmick : MonoBehaviour
 {
@@ -16,10 +17,16 @@ public class DialGimmick : MonoBehaviour
 
     [SerializeField] PlayerMove plyer;
     [SerializeField] DoorMove _door;
+    [SerializeField] Image[] _dialImage;
+    float _anglePerChar = 360f / 26f;
     void Start()
     {
         _textInput.gameObject.SetActive(false);
         _textAns.gameObject.SetActive(false);
+        for (int i = 0; i < _dialImage.Length; i++)
+        {
+            _dialImage[i].gameObject.SetActive(false);
+        }
         _answer = new char[_lenght];
         _dial = new char[_lenght];
         string chars = "abcdefghijklmnopqrstuvwxyz";
@@ -37,13 +44,13 @@ public class DialGimmick : MonoBehaviour
         if (_isOperation)
         {
             //文字の変更
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 LeftRotate(selct);
                 text = $"Dial{selct} = {_dial[selct]}";
                 _textInput.text = text;
             }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 RightRotate(selct);
                 text = $"Dial{selct} = {_dial[selct]}";
@@ -59,6 +66,7 @@ public class DialGimmick : MonoBehaviour
                 {
                     selct = 0;
                 }
+                UpdateDialView();
                 text = $"Dial{selct} = {_dial[selct]}";
                 _textInput.text = text;
                 Debug.Log($"Dial{selct} = {_dial[selct]}");
@@ -71,6 +79,7 @@ public class DialGimmick : MonoBehaviour
                 {
                     selct = _lenght - 1;
                 }
+                UpdateDialView();
                 text = $"Dial{selct} = {_dial[selct]}";
                 _textInput.text = text;
                 Debug.Log($"Dial{selct} = {_dial[selct]}");
@@ -85,6 +94,10 @@ public class DialGimmick : MonoBehaviour
                     _door.CloseDoor();
                     //_door.OpenDoor();
 
+                    for (int i = 0; i < _dialImage.Length; i++)
+                    {
+                        _dialImage[i].gameObject.SetActive(false);
+                    }
                     _textInput.gameObject.SetActive(false);
                     _textAns.gameObject.SetActive(false);
                     _isOperation = false;
@@ -109,6 +122,7 @@ public class DialGimmick : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    UpdateDialView();
                     _textInput.gameObject.SetActive(true);
                     _textAns.gameObject.SetActive(true);
                     _isOperation = true;
@@ -120,6 +134,17 @@ public class DialGimmick : MonoBehaviour
         }
     }
 
+    void UpdateDialView()
+    {
+        for (int i = 0; i < _dialImage.Length; i++)
+        {
+            bool active = (i == selct);
+
+            _dialImage[i].gameObject.SetActive(active);
+            Debug.Log($"Dial{i} = {active}");
+        }
+    }
+
     void LeftRotate(int num)
     {
         _dial[num]++;
@@ -127,6 +152,7 @@ public class DialGimmick : MonoBehaviour
         {
             _dial[num] = 'a';
         }
+        _dialImage[num].rectTransform.Rotate(0, 0, _anglePerChar);
     }
     void RightRotate(int num)
     {
@@ -135,6 +161,7 @@ public class DialGimmick : MonoBehaviour
         {
             _dial[num] = 'z';
         }
+        _dialImage[num].rectTransform.Rotate(0, 0, -_anglePerChar);
     }
     //コード一致時の処理
     bool _isDoorMove()
